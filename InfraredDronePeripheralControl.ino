@@ -7,7 +7,7 @@
  * 
  * SETUP:
  *  Connect IR Reciever to pin 11
- *  Connect motor to pin ?
+ *  Connect motor to pin 10
  *  
  *  VERSION HISTORY:
  *  
@@ -25,6 +25,7 @@
 // Pins
 const int RECV_PIN = 11; // IR reciever data pin
 const int ledPin = 13; // Onboard LED for testing
+const int servoPin = 10; // Storage bay-opening servo
 
 // Remote Button Hexadecimal IR Codes
 const int playButton = 0x77E120D8;

@@ -51,14 +51,16 @@ void loop() {
       case minusButton: break;
       case rewindButton: break;
       case forwardButton: break;
-      case menuButton: break;
+      case menuButton: testBlink(); break;
     }
   }
 }
 
 void dropConfetti() { // Drop confetti from the confetti module
   // To do: write final code
-  // For testing purposes: flash the LED five times
+}
+
+void testBlink() { // Blinks onboard LED five times
   for (int i = 0; i < 5; i++) {
     digitalWrite(ledPin, HIGH);
     delay(200);

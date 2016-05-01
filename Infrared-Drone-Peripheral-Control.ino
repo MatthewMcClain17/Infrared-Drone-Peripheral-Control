@@ -34,6 +34,7 @@
  */
 
 #include <IRremote.h>
+#include <Servo.h>
 
 // VARIABLES
 // Pins
@@ -49,12 +50,15 @@ const int rewindButton = 0x77E110D8;
 const int forwardButton = 0x77E1E0D8;
 const int menuButton = 0x77E140D8;
 
+// OBJECTS
 IRrecv irrecv(RECV_PIN);
 decode_results results;
+Servo servo;
 
 void setup() {
   irrecv.enableIRIn();
-  pinMode(ledPin, OUTPUT); 
+  servo.attach(servoPin);
+  pinMode(ledPin, OUTPUT);
 }
 
 void loop() {
@@ -63,7 +67,7 @@ void loop() {
       case playButton: dropConfetti(); break;
       case plusButton: break;
       case minusButton: break;
-      case rewindButton: break;
+      case rewindButton: resetServo(); break;
       case forwardButton: break;
       case menuButton: testBlink(); break;
     }
@@ -71,7 +75,11 @@ void loop() {
 }
 
 void dropConfetti() { // Drop confetti from the confetti module
-  // To do: write final code
+  servo.write(0); // turn servo to side, releasing bottom
+}
+
+void resetServo() {
+  servo.write(90); // put servo horn underneath bottom of dropper, locking it
 }
 
 void testBlink() { // Blinks onboard LED five times

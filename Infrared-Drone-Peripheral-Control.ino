@@ -25,6 +25,12 @@
  *  
  *  VERSION HISTORY:
  *  
+ *  0.2:
+ *    + super important irrecv.resume() method run after interpreting code
+ *    + servo position setting variables
+ *    + new IR codes for new IR remote
+ *    + resetServo() to allow greater control of servo position
+ *  
  *  0.1:
  *    + pin variable declarations and IR codes
  *    + irrecv and decode_results objects
@@ -42,13 +48,17 @@ const int RECV_PIN = 11; // IR reciever data pin
 const int ledPin = 13; // Onboard LED for testing
 const int servoPin = 10; // Storage bay-opening servo
 
-// Remote Button Hexadecimal IR Codes
-const int playButton = 0x77E120D8;
-const int plusButton = 0x77E1D0D8;
-const int minusButton = 0x77E1B0D8;
-const int rewindButton = 0x77E110D8;
-const int forwardButton = 0x77E1E0D8;
-const int menuButton = 0x77E140D8;
+// Servo Position Settings
+const int unlocked = 12;
+const int locked = unlocked + 90;
+
+// Apple IR Remote Button Hexadecimal IR Codes
+const long playButton = 2011275285;
+const long plusButton = 2011254805;
+const long minusButton = 2011246613;
+const long rewindButton = 2011271189;
+const long forwardButton = 2011258901;
+const long menuButton = 2011283477;
 
 // OBJECTS
 IRrecv irrecv(RECV_PIN);
@@ -56,13 +66,16 @@ decode_results results;
 Servo servo;
 
 void setup() {
+  //Serial.begin(9600); // begin serial monitor for testing
   irrecv.enableIRIn();
   servo.attach(servoPin);
+  servo.write(unlocked); // set initial servo position to unlocked
   pinMode(ledPin, OUTPUT);
 }
 
 void loop() {
   if (irrecv.decode(&results)) { // if IR reciever recieves data
+    //Serial.println(results.value);
     switch (results.value) { // determine button pressed from code recieved
       case playButton: dropConfetti(); break;
       case plusButton: break;
@@ -71,18 +84,20 @@ void loop() {
       case forwardButton: break;
       case menuButton: testBlink(); break;
     }
+    irrecv.resume();
   }
 }
 
 void dropConfetti() { // Drop confetti from the confetti module
-  servo.write(0); // turn servo to side, releasing bottom
+  servo.write(unlocked); // turn servo to side, releasing bottom
 }
 
 void resetServo() {
-  servo.write(90); // put servo horn underneath bottom of dropper, locking it
+  servo.write(locked); // put servo horn underneath bottom of dropper, locking it
 }
 
 void testBlink() { // Blinks onboard LED five times
+  //Serial.println("Testing 123");
   for (int i = 0; i < 5; i++) {
     digitalWrite(ledPin, HIGH);
     delay(200);
